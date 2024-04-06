@@ -1,0 +1,13 @@
+# https://taskfile.dev
+
+version: "3"
+
+interval: 500ms
+
+tasks:
+  tailwind-watch:
+    aliases:
+      - tw
+    cmds:
+      - pnpx tailwindcss -i ./input.css -o ./assets/tailwind.css --watch
+    silent: true
