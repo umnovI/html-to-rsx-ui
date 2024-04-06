@@ -15,6 +15,22 @@ fn main() {
 #[component]
 fn App() -> Element {
     rsx! {
-        button {class: "btn", "Test me"}
+        div { class: "container mx-auto mt-4",
+            div { class: "grid grid-cols-2 gap-4",
+                textarea {
+                    id: "text-to-parse",
+                    placeholder: "Type here",
+                    class: "input input-bordered min-h-96 w-full text-start resize-none pt-2"
+                }
+                textarea {
+                    id: "parsed-text",
+                    placeholder: "Type here",
+                    class: "input input-bordered min-h-96 w-full resize-none pt-2"
+                }
+            }
+            div { class: "flex items-center justify-center mt-4",
+                button { class: "btn", "Translate to rsx" }
+            }
+        }
     }
 }
