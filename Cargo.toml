@@ -13,3 +13,4 @@ dioxus = { version = "0.5", features = ["desktop"] }
 # Debug
 log = "0.4.19"
 dioxus-logger = "0.4.1"
+regex = { version = "1.10.4", features = ["std"] }

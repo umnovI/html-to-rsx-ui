@@ -8,4 +8,8 @@
     "tailwindCSS.includeLanguages": {
         "rust": "html"
     },
+    "cSpell.words": [
+        "onclick",
+        "oninput"
+    ],
 }
