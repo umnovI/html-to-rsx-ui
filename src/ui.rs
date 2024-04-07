@@ -6,9 +6,7 @@ use dioxus::prelude::*;
 pub fn Interface(data: Signal<String>, translated_data: Signal<String>) -> Element {
     let mut draft = use_signal(|| "".to_string());
     let onclick = move |_| {
-        log::info!("click");
         if !draft.read().is_empty() {
-            log::info!("i have value");
             data.set(draft());
         }
     };
@@ -21,7 +19,6 @@ pub fn Interface(data: Signal<String>, translated_data: Signal<String>) -> Eleme
                     class: "input input-bordered min-h-96 w-full text-start resize-none pt-2",
                     oninput: move |evt: Event<FormData>| {
                         draft.set(evt.value());
-                        log::info!("{:?}", evt.value());
                     }
                 }
                 textarea {
