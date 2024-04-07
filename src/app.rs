@@ -4,37 +4,67 @@ use crate::ui::Interface;
 use dioxus::prelude::*;
 use regex::Regex;
 
-struct Replacer {
+struct Replace {
     regex: Regex,
     replace_with: String,
 }
 
 struct Re {
-    content: Regex,
-    word: Regex,
-    element: Regex,
-    class: Regex,
-    closing_element: Regex,
-    self_closing: Regex,
-    r#type: Regex,
-    placeholder: Regex,
-    endline: Regex,
-    spaces: Regex,
+    content: Replace,
+    word: Replace,
+    element: Replace,
+    class: Replace,
+    closing_element: Replace,
+    self_closing: Replace,
+    r#type: Replace,
+    placeholder: Replace,
+    endline: Replace,
+    spaces: Replace,
 }
 
 impl Re {
     fn new() -> Self {
         Self {
-            content: Regex::new(r#"(<.*?>)(.*?)(<)"#).unwrap(),
-            word: Regex::new(r#"(\s)(\w+\W+?)(\n)"#).unwrap(),
-            element: Regex::new(r#"<(?P<tag_name>\w+)(?P<content>.*?)??/?>"#).unwrap(),
-            class: Regex::new(r#"(class=(?P<classes>".*?"))"#).unwrap(),
-            r#type: Regex::new(r#"(type=(?P<content>".*?"))"#).unwrap(),
-            placeholder: Regex::new(r#"(placeholder=(?P<content>".*?"))"#).unwrap(),
-            closing_element: Regex::new(r#"(</(?P<tag_name>\w+)>)"#).unwrap(),
-            self_closing: Regex::new(r#"/>"#).unwrap(),
-            endline: Regex::new(r#"(,)\s*(})"#).unwrap(),
-            spaces: Regex::new(r#"\s{2,}"#).unwrap(),
+            content: Replace {
+                regex: Regex::new(r#"(<.*?>)(.*?)(<)"#).unwrap(),
+                replace_with: "$1 \"$2\" $3".to_string(),
+            },
+            word: Replace {
+                regex: Regex::new(r#"(\s)(\w+\W+?)(\n)"#).unwrap(),
+                replace_with: "$1 \"$2\" $3".to_string(),
+            },
+            element: Replace {
+                regex: Regex::new(r#"<(?P<tag_name>\w+)(?P<content>.*?)??/?>"#).unwrap(),
+                replace_with: "$tag_name { $content".to_string(),
+            },
+            class: Replace {
+                regex: Regex::new(r#"(class=(?P<classes>".*?"))"#).unwrap(),
+                replace_with: "class: $classes, ".to_string(),
+            },
+            r#type: Replace {
+                regex: Regex::new(r#"(type=(?P<content>".*?"))"#).unwrap(),
+                replace_with: "r#type: $content, ".to_string(),
+            },
+            placeholder: Replace {
+                regex: Regex::new(r#"(placeholder=(?P<content>".*?"))"#).unwrap(),
+                replace_with: "placeholder: $content, ".to_string(),
+            },
+            closing_element: Replace {
+                regex: Regex::new(r#"(</(?P<tag_name>\w+)>)"#).unwrap(),
+                replace_with: "}".to_string(),
+            },
+            self_closing: Replace {
+                regex: Regex::new(r#"/>"#).unwrap(),
+                replace_with: "> </replace_me>".to_string(),
+            },
+            endline: Replace {
+                regex: Regex::new(r#"(,)\s*(})"#).unwrap(),
+                replace_with: "$1 $2".to_string(),
+            },
+            spaces: Replace {
+                regex: Regex::new(r#"\s{2,}"#).unwrap(),
+                replace_with: " ".to_string(),
+            },
         }
     }
 }
@@ -56,18 +86,38 @@ pub fn App() -> Element {
 
 fn translate(data: String, re: &Re) -> String {
     let out = {
-        let quote_words = re.content.replace_all(&data, "$1 \"$2\" $3");
-        let l_word = re.word.replace_all(&quote_words, "$1 \"$2\" $3");
-        let self_closing = re.self_closing.replace_all(&l_word, "> </replace_me>");
+        let quote_words = re
+            .content
+            .regex
+            .replace_all(&data, &re.content.replace_with);
+        let l_word = re
+            .word
+            .regex
+            .replace_all(&quote_words, &re.word.replace_with);
+        let self_closing = re
+            .self_closing
+            .regex
+            .replace_all(&l_word, &re.self_closing.replace_with);
         let clean_tag = re
             .element
-            .replace_all(&self_closing, "$tag_name { $content");
-        let clean_class = re.class.replace_all(&clean_tag, "class: $classes, ");
-        let clean_type = re.r#type.replace_all(&clean_class, "r#type: $content, ");
+            .regex
+            .replace_all(&self_closing, &re.element.replace_with);
+        let clean_class = re
+            .class
+            .regex
+            .replace_all(&clean_tag, &re.class.replace_with);
+        let clean_type = re
+            .r#type
+            .regex
+            .replace_all(&clean_class, &re.r#type.replace_with);
         let clean_placeholder = re
             .placeholder
-            .replace_all(&clean_type, "placeholder: $content, ");
-        let close_tag = re.closing_element.replace_all(&clean_placeholder, "}");
+            .regex
+            .replace_all(&clean_type, &re.placeholder.replace_with);
+        let close_tag = re
+            .closing_element
+            .regex
+            .replace_all(&clean_placeholder, &re.closing_element.replace_with);
         close_tag.into_owned()
     };
     out
