@@ -1,22 +1,23 @@
 #![allow(non_snake_case)]
-use anyhow::{Context, Result};
+use anyhow::{Context, Error, Result};
+use copypasta::{ClipboardContext, ClipboardProvider};
 use dioxus::prelude::*;
-use html_parser::Dom;
+use html_parser::{Dom, DomVariant};
 
 use crate::ui::Interface;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub enum Status {
     Err,
     Ok,
 }
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub struct App {
     pub html: Signal<String>,
     pub rsx: Signal<String>,
     pub status: Signal<Status>,
-    pub error_data: Option<String>,
+    pub error_data: Signal<Option<String>>,
 }
 
 impl App {
@@ -25,7 +26,7 @@ impl App {
             html: use_signal(|| "".to_string()),
             rsx: use_signal(|| "".to_string()),
             status: use_signal(|| Status::Ok),
-            error_data: None,
+            error_data: use_signal(|| None),
         }
     }
 }
@@ -40,7 +41,7 @@ pub fn App() -> Element {
             Ok(val) => app.rsx.set(val),
             Err(err) => {
                 app.status.set(Status::Err);
-                app.error_data = Some(err.to_string());
+                app.error_data.set(Some(err.to_string()));
             }
         };
     }
@@ -50,6 +51,9 @@ pub fn App() -> Element {
 
 fn translate(data: String) -> Result<String> {
     let dom = Dom::parse(data.trim()).with_context(|| "could not parse html")?;
+    if matches!(dom.tree_type, DomVariant::Empty) {
+        return Err(Error::msg("could not build DOM tree".to_string()));
+    };
     let body = rsx_rosetta::rsx_from_html(&dom);
     let out = dioxus_autofmt::write_block_out(body).with_context(|| "could not format output")?;
     Ok(out.trim().to_string())
