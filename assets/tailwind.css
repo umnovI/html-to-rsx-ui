@@ -1632,6 +1632,10 @@ html {
   position: absolute;
 }
 
+.relative {
+  position: relative;
+}
+
 .right-0 {
   right: 0px;
 }
@@ -1646,6 +1650,10 @@ html {
 
 .right-8 {
   right: 2rem;
+}
+
+.z-10 {
+  z-index: 10;
 }
 
 .mx-auto {

@@ -1,6 +1,5 @@
 #![allow(non_snake_case)]
 use anyhow::{Context, Error, Result};
-use copypasta::{ClipboardContext, ClipboardProvider};
 use dioxus::prelude::*;
 use html_parser::{Dom, DomVariant};
 

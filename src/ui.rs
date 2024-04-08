@@ -34,16 +34,14 @@ pub fn Interface(app: App) -> Element {
                         draft.set(evt.value());
                     }
                 }
-                div {
+                div { class: "relative",
                     ErrorBoundary {
                         handle_error: |error| {
                             rsx! {
                                 "Could not initialize CopyBtn component: {error}"
                             }
                         },
-                        div { class: "absolute top-auto right-8 p-2",
-                            CopyBtn { rsx, err_status, err_msg }
-                        }
+                        div { class: "absolute top-auto right-0 p-2", CopyBtn { rsx } }
                     }
                     textarea {
                         id: "translated-text",
@@ -70,7 +68,7 @@ fn ErrorAlert(err_status: Signal<Status>, err_msg: Signal<Option<String>>) -> El
     let msg = err_msg()?;
 
     rsx! {
-        div { class: "fixed right-0", id: "alert-popup",
+        div { class: "fixed right-0 z-10", id: "alert-popup",
             div { class: "pr-4",
                 div {
                     role: "alert",
@@ -118,11 +116,7 @@ impl CopyBtn {
 }
 
 #[component]
-fn CopyBtn(
-    rsx: Signal<String>,
-    err_status: Signal<Status>,
-    err_msg: Signal<Option<String>>,
-) -> Element {
+fn CopyBtn(rsx: Signal<String>) -> Element {
     let mut ctx = ClipboardContext::new().throw()?;
     let mut copy = CopyBtn::new();
 
@@ -137,6 +131,7 @@ fn CopyBtn(
             },
             button {
                 class: "btn btn-square btn-sm",
+                prevent_default: "onclick",
                 onclick: move |_| {
                     if !rsx().is_empty() {
                         ctx.set_contents(rsx().to_owned()).unwrap();
