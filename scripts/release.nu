@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+dx build --release --features bundle
+
 let release = ('release\' | path exists)
 if $release {
     rm -r release\
