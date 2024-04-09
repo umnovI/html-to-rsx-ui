@@ -14,10 +14,14 @@ tasks:
 
   create-manifest:
     cmds:
-      - mgen --cwd "{{.USER_WORKING_DIR}}" --alias hrt --file "{{.USER_WORKING_DIR}}\dist\bundle\msi\html-to-rsx-ui_0.1.0_x64_en-US.msi" --bin html-to-rsx-ui.exe
+      - mgen --cwd "{{.USER_WORKING_DIR}}" --alias hrt --file "{{.USER_WORKING_DIR}}\release\html-to-rsx-ui.7z" --bin html-to-rsx-ui.exe
     desc: Runs create manifest for current crate.
 
   scoop-install:
     cmds:
       - scoop install "$HOME\scoop\buckets\local\html-to-rsx-ui.json"
     desc: Installs the app with Scoop
+
+  release:
+    cmds:
+      - nu ./scripts/release.nu
