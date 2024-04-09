@@ -80,6 +80,7 @@ fn ErrorAlert(err_status: Signal<Status>, err_msg: Signal<Option<String>>) -> El
                         "data-tip": "Close",
                         onclick: move |_| {
                             err_status.set(Status::Ok);
+                            err_msg.set(None);
                         },
                         svg {
                             "fill": "none",
