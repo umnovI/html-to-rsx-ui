@@ -1,3 +1,4 @@
+#![cfg_attr(feature = "bundle", windows_subsystem = "windows")]
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
@@ -12,7 +13,7 @@ fn main() {
 
     let cfg = dioxus::desktop::Config::new().with_custom_head(
         r#"
-        <link rel="stylesheet" href="/tailwind.css">
+        <link rel="stylesheet" href="/tailwind-release.css">
         "#
         .to_string(),
     );
