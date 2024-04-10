@@ -8,7 +8,6 @@ if $release {
 }
 
 mkdir release\
-"*\n" | save release\.gitignore
 cp assets\* release\
 cp dist\html-to-rsx-ui.exe release\
 
