@@ -25,7 +25,7 @@ tasks:
   scoop-update:
     cmds:
       - scoop update html-to-rsx-ui
-    desc: Installs the app with Scoop
+    desc: Updates the app with Scoop
 
   release:
     cmds:
