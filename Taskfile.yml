@@ -14,7 +14,7 @@ tasks:
 
   create-manifest:
     cmds:
-      - mgen --cwd "{{.USER_WORKING_DIR}}" --alias hrt --file "{{.USER_WORKING_DIR}}\release\html-to-rsx-ui.7z" --bin html-to-rsx-ui.exe
+      - mgen --cwd "{{.USER_WORKING_DIR}}" --alias "HTML to RSX Converter" --file "{{.USER_WORKING_DIR}}\release\html-to-rsx-ui.7z" --bin html-to-rsx-ui.exe --gui
     desc: Runs create manifest for current crate.
 
   scoop-install:
