@@ -11,9 +11,18 @@ fn main() {
     // Init debug
     dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");
 
+    #[cfg(debug_assertions)]
     let cfg = dioxus::desktop::Config::new().with_custom_head(
         r#"
-        <link rel="stylesheet" href="/tailwind-release.css">
+        <link rel="stylesheet" href="/tailwind.css">
+        "#
+        .to_string(),
+    );
+
+    #[cfg(not(debug_assertions))]
+    let cfg = dioxus::desktop::Config::new().with_custom_head(
+        r#"
+        <link rel="stylesheet" href="/tailwind.min.css">
         "#
         .to_string(),
     );

@@ -22,6 +22,11 @@ tasks:
       - scoop install "$HOME\scoop\buckets\local\html-to-rsx-ui.json"
     desc: Installs the app with Scoop
 
+  scoop-update:
+    cmds:
+      - scoop update html-to-rsx-ui
+    desc: Installs the app with Scoop
+
   release:
     cmds:
       - nu ./scripts/release.nu
